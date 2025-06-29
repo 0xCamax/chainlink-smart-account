@@ -1,66 +1,73 @@
-## Foundry
+# Chainlink Powered Smart Account
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+> **Modular EIP-7702 Account Abstraction with Chainlink CCIP, Automation, and Fee Token Integration**
 
-Foundry consists of:
+## 🧩 Overview
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+`ChainlinkPoweredSmartAccount` is a modular and extensible smart account built on top of the EIP-7702 specification. It integrates powerful Chainlink services including:
 
-## Documentation
+- 🧬 **CCIP (Cross-Chain Interoperability Protocol)** for sending and receiving cross-chain messages.
+- ⏰ **Automation (Keepers)** for scheduled execution of tasks.
+- 💸 **Fee Token Logic** for paying gas in alternative tokens through a `PoolManager`.
 
-https://book.getfoundry.sh/
+The design leverages `delegatecall` to keep the core account lightweight and enables flexible upgrades via logic contracts.
 
-## Usage
+---
 
-### Build
+## ⚙️ Key Features
 
-```shell
-$ forge build
+### ✅ EIP-4337 Compatibility
+
+- Inherits from `Simple7702Account`.
+- Fully compatible with ephemeral smart accounts and programmable session logic.
+
+### 🔗 Chainlink CCIP
+
+- `executeCCIP(Call[], Config)` delegates execution to `CCIPLogic`, enabling secure message dispatching across chains.
+- `ccipReceive(Any2EVMMessage)` handles incoming messages and delegates to the same logic.
+- Makes use of `Client` library for message struct decoding.
+
+### ⏰ Chainlink Automation
+
+- Inherits `Automation` logic.
+- Interfaces with `IKeeperRegistryUI` and `IAutomationRegistrar2_3` for upkeeps.
+- Stores upkeep-related metadata in deterministic storage slots.
+
+### 💸 Fee Token Support
+
+- `setFeeTokenInfo()` and `feeTokenInfo()` allow the account to set or read custom fee tokens.
+- Supports `ETH` or ERC-20 tokens as gas tokens.
+- Interacts with a `PoolManager` to unlock funds and provide pre-funding logic via `_payPrefund`.
+
+---
+
+## 🧱 Architecture
+
+````mermaid
+graph TD
+  A[ChainlinkPoweredSmartAccount] -->|inherits| B[Simple7702Account]
+  A -->|inherits| C[Automation]
+  A -->|inherits| D[ChainlinkAccountConstants]
+  A --> E[CCIPLogic (delegatecall)]
+  A --> F[FeeTokenLogic (delegatecall)]
+  A --> G[PoolManager]
+  A --> H[KeeperRegistry & Registrar]
+
+  ## 📦 Trigger CCIP Execution
+
+  ```solidity
+chainlinkAccount.executeCCIP(calls, config)
+```
+Receive CCIP Message (called automatically)
+  ```solidity
+function ccipReceive(Client.Any2EVMMessage calldata message) external;
 ```
 
-### Test
+##Security Considerations
+delegatecall is strictly used with immutable addresses (CCIPLogic, FeeTokenLogic).
 
-```shell
-$ forge test
-```
+Only Router can call CCIP, enforced at the delegated contract modifier.
 
-### Format
+##Notes
+This smart account serves as a powerful abstraction layer that simplifies the usage of Chainlink products such as CCIP, Automation, and gas fee management. It allows developers to offer users seamless cross-chain communication, scheduled execution, and flexible gas payments without exposing them to protocol-level complexity. It is ideal for building user-centric applications like DAOs, autonomous agents, and automated workflows that rely on secure and decentralized off-chain infrastructure.
 
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
