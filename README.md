@@ -69,5 +69,4 @@ delegatecall is strictly used with immutable addresses (CCIPLogic, FeeTokenLogic
 Only Router can call CCIP, enforced at the delegated contract modifier.
 
 ##Notes
-This smart account serves as a powerful abstraction layer that simplifies the usage of Chainlink products such as CCIP, Automation, and gas fee management. It allows developers to offer users seamless cross-chain communication, scheduled execution, and flexible gas payments without exposing them to protocol-level complexity. It is ideal for building user-centric applications like DAOs, autonomous agents, and automated workflows that rely on secure and decentralized off-chain infrastructure.
-
+This smart account serves as a powerful abstraction layer that simplifies the usage of Chainlink products such as CCIP, Automation, and gas fee management. It allows developers to offer users seamless cross-chain communication, scheduled execution, and flexible gas payments without exposing them to protocol-level complexity.
