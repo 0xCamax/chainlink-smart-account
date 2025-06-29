@@ -68,23 +68,6 @@ The Chainlink Powered Smart Account revolutionizes automation UX by separating *
 - Supports `ETH` or ERC-20 tokens as gas tokens
 - Interacts with a `PoolManager` to unlock funds and provide pre-funding logic via `_payPrefund`
 
----
-
-## 🧱 Architecture
-
-```mermaid
-graph TD
-  A[ChainlinkPoweredSmartAccount] -->|inherits| B[Simple7702Account]
-  A -->|inherits| C[Automation]
-  A -->|inherits| D[ChainlinkAccountConstants]
-  A --> E[CCIPLogic (delegatecall)]
-  A --> F[FeeTokenLogic (delegatecall)]
-  A --> G[PoolManager]
-  A --> H[KeeperRegistry & Registrar]
-```
-
----
-
 ## 🧭 Automation Module
 
 The `Automation` contract integrates **Chainlink Automation (Keepers)** and extends `CronUpkeep` to allow scheduling tasks via:
