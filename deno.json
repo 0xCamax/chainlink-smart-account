@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "dev": "deno run --watch main.ts",
+    "deploy": "deno run --allow-env --allow-run --allow-read --env-file=.env deploy.ts",
+    "compile": "deno run --allow-env --allow-run --allow-read --env-file=.env test-compile.ts"
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@1"
+  }
+}
